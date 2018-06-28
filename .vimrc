@@ -1,3 +1,4 @@
+
 syntax on
 :imap jj <Esc>
 execute pathogen#infect()
@@ -10,8 +11,7 @@ fun! <SID>StripWhite()
 endfun
 
 set background=dark
-"colorscheme deus
-let g:airline_theme='deus'
+colorscheme gotham
 
 let NERDTreeShowHidden=1
 
@@ -20,6 +20,17 @@ let NERDTreeShowHidden=1
 
 "copy to clipboard
 vnoremap <C-c> :w !pbcopy<CR><CR>
+
+"Swt Proper Spacing
+set shiftwidth=2
+set tabstop=2
+set expandtab
+
+"Completion Help
+inoremap ,, <C-x><C-o><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",,"<CR>
+inoremap ,; <C-n><C-r>=pumvisible()      ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",;"<CR>
+inoremap ,: <C-x><C-f><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",:"<CR>
+inoremap ,= <C-x><C-l><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",="<CR>
 
 autocmd FileType gitcommit set nosmartindent | set formatoptions-=t
 
@@ -58,9 +69,9 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-
-nnoremap <Leader>q" ciw""<Esc>P                                   " put double qunote around word
-nnoremap <Leader>q' ciw''<Esc>P                                   " put single quotes around word
+"Quote and Unquote
+nnoremap sq :silent! normal mpea'<Esc>bi'<Esc>`pl
+nnoremap qs :silent! normal mpeld bhd `ph<CR>
 
 :set noswapfile
 
@@ -70,7 +81,24 @@ map <Leader>t :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
 map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
+map <Leader>x :call RunSpecLine()<CR>
 
+
+"Git NerdTree
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
+
+"Airline
 let g:airline_powerline_fonts = 1
 let g:Powerline_symbols = 'fancy'
 if has("gui_running")
