@@ -1,8 +1,25 @@
-
 syntax on
 :imap jj <Esc>
 execute pathogen#infect()
 let mapleader = " "
+
+"==============================THEME==================================
+colorscheme space-vim-dark
+hi Comment guifg=#5C6370 ctermfg=59
+set termguicolors
+hi LineNr ctermbg=NONE guibg=NONE
+let g:space_vim_dark_background = 234
+highlight VertSplit cterm=NONE
+
+let NERDTreeShowHidden=1
+
+"==============================PRY==================================
+:ia pry require 'pry';binding.pry
+
+"==============================SPACING==================================
+set shiftwidth=2
+set tabstop=2
+set expandtab
 
 autocmd BufWritePre * :call <SID>StripWhite()
 fun! <SID>StripWhite()
@@ -10,36 +27,7 @@ fun! <SID>StripWhite()
 	%s!^\( \+\)\t!\=StrRepeat("\t", 1 + strlen(submatch(1)) / 8)!ge
 endfun
 
-set background=dark
-colorscheme gotham
-
-let NERDTreeShowHidden=1
-
-"shortcut for adding require ‘pry’;binding.pry
-:ia pry require 'pry';binding.pry
-
-"copy to clipboard
-vnoremap <C-c> :w !pbcopy<CR><CR>
-
-"Swt Proper Spacing
-set shiftwidth=2
-set tabstop=2
-set expandtab
-
-"Completion Help
-inoremap ,, <C-x><C-o><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",,"<CR>
-inoremap ,; <C-n><C-r>=pumvisible()      ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",;"<CR>
-inoremap ,: <C-x><C-f><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",:"<CR>
-inoremap ,= <C-x><C-l><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",="<CR>
-
-autocmd FileType gitcommit set nosmartindent | set formatoptions-=t
-
-
-set backspace=indent,eol,start                                   " backspace through everyt
-set nowrap                                                       " don't wrap lines
-set tabstop=2 shiftwidth=2                                       " default tab is two spaces
-
-" Basic editor behaviour
+"==============================BASIC==================================
 filetype plugin indent on       " load file type plugins + indentation
 nnoremap <C-B> <C-Z>
 set t_Co=256                    " Explicitly tell vim that the terminal supports 256 colors
@@ -55,27 +43,33 @@ set ts=2                        " Set indent to 2 spaces
 set relativenumber              " Show relative line numbers
 set vb                          " enable visual bell (disable audio bell)
 set clipboard=unnamed           " use system clipboard
-set mouse=a
-
+set mouse=a                     " enable mouse
+:set noswapfile                 " swap file directory
+set backspace=indent,eol,start  " backspace through everyt
+set nowrap                      " don't wrap lines
+set tabstop=2 shiftwidth=2      " default tab is two spaces
+vnoremap <C-c> :w !pbcopy<CR><CR>
 autocmd vimenter * NERDTree
+autocmd FileType gitcommit set nosmartindent | set formatoptions-=t
 
-"Auto Complete
+"==============================AUTOCOMPLETE==================================
 autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1
 autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
 autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
-
 nnoremap <C-J> <c-w><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+inoremap ,, <C-x><C-o><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",,"<CR>
+inoremap ,; <C-n><C-r>=pumvisible()      ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",;"<CR>
+inoremap ,: <C-x><C-f><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",:"<CR>
+inoremap ,= <C-x><C-l><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",="<CR>
 
-"Quote and Unquote
+"==============================QUOTE/UNQUOTE==================================
 nnoremap sq :silent! normal mpea'<Esc>bi'<Esc>`pl
 nnoremap qs :silent! normal mpeld bhd `ph<CR>
 
-:set noswapfile
-
-" RSpec.vim mappings
+"==============================RSPEC==================================
 let g:rspec_command = '!bundle exec rspec {spec}'
 map <Leader>t :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
@@ -83,8 +77,7 @@ map <Leader>l :call RunLastSpec()<CR>
 map <Leader>a :call RunAllSpecs()<CR>
 map <Leader>x :call RunSpecLine()<CR>
 
-
-"Git NerdTree
+"==============================GITNERDTREE==================================
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
@@ -98,12 +91,7 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
-"Airline
+"==============================AIRLINE==================================
 let g:airline_powerline_fonts = 1
 let g:Powerline_symbols = 'fancy'
-if has("gui_running")
-    let s:uname = system("uname")
-    if s:uname == "Darwin\n"
-        set guifont=Hack\ for\ Powerline:h15
-    endif
-endif
+
