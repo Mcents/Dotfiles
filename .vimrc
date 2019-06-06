@@ -1,18 +1,15 @@
-syntax on
 :imap jj <Esc>
 execute pathogen#infect()
 let mapleader = " "
+au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
+autocmd Filetype javascript setlocal ts=2 sw=2 sts=0 expandtab
 
 "==============================THEME==================================
-colorscheme space-vim-dark
-hi Comment guifg=#5C6370 ctermfg=59
 set termguicolors
-hi LineNr ctermbg=NONE guibg=NONE
-let g:space_vim_dark_background = 234
-highlight VertSplit cterm=NONE
-
+syntax on
+colorscheme challenger_deep
+set t_Co=256                    " Explicitly tell vim that the terminal supports 256 colors
 let NERDTreeShowHidden=1
-
 "==============================PRY==================================
 :ia pry require 'pry';binding.pry
 
@@ -30,8 +27,6 @@ endfun
 "==============================BASIC==================================
 filetype plugin indent on       " load file type plugins + indentation
 nnoremap <C-B> <C-Z>
-set t_Co=256                    " Explicitly tell vim that the terminal supports 256 colors
-syntax enable                   " highlighting and shit
 set cursorline                  " colours the line the cursor is on
 set scrolloff=4                 " adds top/bottom buffer between cursor and window
 set number                      " line numbers
@@ -69,6 +64,10 @@ inoremap ,= <C-x><C-l><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",=
 nnoremap sq :silent! normal mpea'<Esc>bi'<Esc>`pl
 nnoremap qs :silent! normal mpeld bhd `ph<CR>
 
+"==============================YankingThangs==================================
+xnoremap i% <esc>%:execute "normal! vi" . getline('.')[col('.')-1]<cr>
+onoremap i% :execute "normal vi%"<cr>
+
 "==============================RSPEC==================================
 let g:rspec_command = '!bundle exec rspec {spec}'
 map <Leader>t :call RunCurrentSpecFile()<CR>
@@ -92,6 +91,6 @@ let g:NERDTreeIndicatorMapCustom = {
     \ }
 
 "==============================AIRLINE==================================
+let g:airline_theme='challenger_deep'
 let g:airline_powerline_fonts = 1
 let g:Powerline_symbols = 'fancy'
-
