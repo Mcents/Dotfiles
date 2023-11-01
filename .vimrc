@@ -1,17 +1,22 @@
 :imap jj <Esc>
-execute pathogen#infect()
 let mapleader = " "
 au BufNewFile,BufFilePre,BufRead *.md set filetype=markdown
 autocmd Filetype javascript setlocal ts=2 sw=2 sts=0 expandtab
+nmap <C-P> :FZF<CR>
 
 "==============================THEME==================================
 set termguicolors
 syntax on
-colorscheme challenger_deep
-set t_Co=256                    " Explicitly tell vim that the terminal supports 256 colors
+colorscheme gotham
+set t_Co=256
+
+"==============================TREE==================================
+nnoremap <C-t> :NERDTreeToggle<CR>
 let NERDTreeShowHidden=1
+
 "==============================PRY==================================
-:ia pry require 'pry';binding.pry
+":ia pry require 'pry';binding.pry
+:ia pry require IEx; IEx.pry
 
 "==============================SPACING==================================
 set shiftwidth=2
@@ -44,7 +49,6 @@ set backspace=indent,eol,start  " backspace through everyt
 set nowrap                      " don't wrap lines
 set tabstop=2 shiftwidth=2      " default tab is two spaces
 vnoremap <C-c> :w !pbcopy<CR><CR>
-autocmd vimenter * NERDTree
 autocmd FileType gitcommit set nosmartindent | set formatoptions-=t
 
 "==============================AUTOCOMPLETE==================================
@@ -61,36 +65,39 @@ inoremap ,: <C-x><C-f><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",:
 inoremap ,= <C-x><C-l><C-r>=pumvisible() ? "\<lt>Down>\<lt>C-p>\<lt>Down>" : ",="<CR>
 
 "==============================QUOTE/UNQUOTE==================================
-nnoremap sq :silent! normal mpea'<Esc>bi'<Esc>`pl
+nnoremap sq :silent! normal mpea"<Esc>bi"<Esc>`pl
 nnoremap qs :silent! normal mpeld bhd `ph<CR>
 
 "==============================YankingThangs==================================
 xnoremap i% <esc>%:execute "normal! vi" . getline('.')[col('.')-1]<cr>
 onoremap i% :execute "normal vi%"<cr>
 
-"==============================RSPEC==================================
-let g:rspec_command = '!bundle exec rspec {spec}'
-map <Leader>t :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-map <Leader>x :call RunSpecLine()<CR>
-
-"==============================GITNERDTREE==================================
-let g:NERDTreeIndicatorMapCustom = {
-    \ "Modified"  : "✹",
-    \ "Staged"    : "✚",
-    \ "Untracked" : "✭",
-    \ "Renamed"   : "➜",
-    \ "Unmerged"  : "═",
-    \ "Deleted"   : "✖",
-    \ "Dirty"     : "✗",
-    \ "Clean"     : "✔︎",
-    \ 'Ignored'   : '☒',
-    \ "Unknown"   : "?"
-    \ }
+"=============================FZF======================================
+nnoremap <silent> <leader>/ :Ag<CR>
 
 "==============================AIRLINE==================================
-let g:airline_theme='challenger_deep'
+let g:airline_theme='gotham'
 let g:airline_powerline_fonts = 1
 let g:Powerline_symbols = 'fancy'
+let g:gotham_airline_emphasised_insert = 0
+
+"=============================TESTING==========================
+nmap <silent> <leader>s :TestNearest<CR>
+nmap <silent> <leader>t :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+let test#elixir#exunit#executable = 'iex -S mix test'
+
+"============================LS=====================
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+nmap <silent> gd <Plug>(coc-definition)
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
