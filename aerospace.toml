@@ -64,11 +64,11 @@ automatically-unhide-macos-hidden-apps = false
 #                 https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
 [gaps]
     inner.horizontal = 6
-    inner.vertical =   6
-    outer.left =       6
-    outer.bottom =     6
+    inner.vertical =   7
+    outer.left =       7
+    outer.bottom =     7
     outer.top =        40
-    outer.right =      6
+    outer.right =      7
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -163,3 +163,4 @@ automatically-unhide-macos-hidden-apps = false
     down = 'volume down'
     up = 'volume up'
     shift-down = ['volume set 0', 'mode main']
+
