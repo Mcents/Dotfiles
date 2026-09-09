@@ -23,12 +23,12 @@ fi
 ##### Bar Appearance #####
 # Transparent bar — backgrounds are drawn per-group via brackets
 sketchybar --bar position=top height=34 color=0x00000000 \
-               y_offset=2 shadow=off
+               y_offset=2 shadow=off margin=4 padding_left=4 padding_right=4
 
 ##### Changing Defaults #####
 default=(
-  padding_left=4
-  padding_right=4
+  padding_left=2
+  padding_right=2
   icon.font="Hack Nerd Font:Bold:14.0"
   label.font="Hack Nerd Font:Bold:12.0"
   icon.color=$FG
@@ -40,15 +40,28 @@ default=(
 )
 sketchybar --default "${default[@]}"
 
-##### Workspace Indicators (left) #####
+##### Left — Date/Time #####
+sketchybar --add item clock left \
+           --set clock update_freq=10 \
+                       icon.color=$ACCENT icon.font="Hack Nerd Font:Bold:12.0" \
+                       icon.padding_left=8 icon.padding_right=4 \
+                       label.padding_left=4 label.padding_right=8 \
+                       script="$PLUGIN_DIR/clock.sh"
+
+##### Center — Workspaces + Front App #####
 sketchybar --add event aerospace_workspace_change
 
-# Padding before first workspace
-sketchybar --add item left_pad left \
-           --set left_pad icon.drawing=off label.drawing=off padding_left=2 padding_right=0 width=6
+sketchybar --add item center_pad center \
+           --set center_pad icon.drawing=off label.drawing=off padding_left=2 padding_right=0 width=6
 
 for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
+    if [ "$sid" = "3" ]; then
+        sketchybar --add item chevron center \
+            --set chevron icon="›" label.drawing=off icon.color=$ACCENT \
+            icon.font="Hack Nerd Font:Bold:18.0" \
+            padding_left=4 padding_right=4
+    fi
+    sketchybar --add item space.$sid center \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid \
         background.color=$ACCENT \
@@ -67,37 +80,51 @@ for sid in $(aerospace list-workspaces --all); do
         script="$CONFIG_DIR/plugins/aerospace.sh $sid"
 done
 
-##### Front App (left) #####
-sketchybar --add item chevron left \
-           --set chevron icon="›" label.drawing=off icon.color=$ACCENT icon.font="Hack Nerd Font:Bold:18.0" \
-           --add item front_app left \
-           --set front_app icon.drawing=off label.color=$ACCENT script="$PLUGIN_DIR/front_app.sh" \
+sketchybar --add item center_pad_r center \
+           --set center_pad_r icon.drawing=off label.drawing=off padding_left=0 padding_right=2 width=6
+
+sketchybar --add item front_app center \
+           --set front_app icon.drawing=off label.drawing=off script="$PLUGIN_DIR/front_app.sh" \
            --subscribe front_app front_app_switched
 
-##### Right Items #####
-sketchybar --add item clock right \
-           --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
+##### Right — Wifi + Volume + Battery #####
+sketchybar --add item wifi right \
+           --set wifi update_freq=30 icon.color=$ACCENT icon.padding_right=8 script="$PLUGIN_DIR/wifi.sh" \
+           --subscribe wifi wifi_change \
            --add item volume right \
-           --set volume script="$PLUGIN_DIR/volume.sh" \
+           --set volume icon.color=$ACCENT script="$PLUGIN_DIR/volume.sh" \
            --subscribe volume volume_change \
            --add item battery right \
-           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --set battery update_freq=120 icon.color=$ACCENT icon.padding_left=8 label.padding_right=8 script="$PLUGIN_DIR/battery.sh" \
            --subscribe battery system_woke power_source_change
 
 ##### Brackets — group backgrounds #####
-# Left group: workspaces + front app
-sketchybar --add bracket left_group left_pad '/space\..*/' chevron front_app \
+# Left group: date/time
+sketchybar --add bracket left_group clock \
            --set left_group background.color=$BG_TRANS \
                             background.corner_radius=10 \
                             background.height=26 \
-                            background.blur_radius=20
+                            background.blur_radius=20 \
+                            background.border_color=$ACCENT \
+                            background.border_width=1
 
-# Right group: clock, volume, battery
-sketchybar --add bracket right_group clock volume battery \
+# Center group: workspaces + app icon
+sketchybar --add bracket center_group center_pad '/space\..*/' chevron center_pad_r \
+           --set center_group background.color=$BG_TRANS \
+                              background.corner_radius=10 \
+                              background.height=26 \
+                              background.blur_radius=20 \
+                              background.border_color=$ACCENT \
+                              background.border_width=1
+
+# Right group: wifi, volume, battery
+sketchybar --add bracket right_group wifi volume battery \
            --set right_group background.color=$BG_TRANS \
                              background.corner_radius=10 \
                              background.height=26 \
-                             background.blur_radius=20
+                             background.blur_radius=20 \
+                             background.border_color=$ACCENT \
+                             background.border_width=1
 
 ##### Force all scripts to run the first time (never do this in a script) #####
 sketchybar --update
